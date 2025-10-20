@@ -16,49 +16,51 @@ class NotionClient:
         """
         try:
             page = self.client.pages.create(
-                parent={"database_id": self.database_id},
-                properties={
-                    "Meeting ID": {"title": [{"text": {"content": meeting_id}}]},
-                    "Status": {"select": {"name": "Completed"}},
-                },
-                children=[
-                    {
-                        "object": "block",
-                        "type": "heading_2",
-                        "heading_2": {
-                            "rich_text": [{"type": "text", "text": {"content": "Summary"}}]
-                        }
-                    },
-                    {
-                        "object": "block",
-                        "type": "paragraph",
-                        "paragraph": {
-                            "rich_text": [{"type": "text", "text": {"content": summary}}]
-                        }
-                    },
-                    {
-                        "object": "block",
-                        "type": "heading_2",
-                        "heading_2": {
-                            "rich_text": [{"type": "text", "text": {"content": "Tasks"}}]
-                        }
-                    },
-                    *[self._create_task_block(task) for task in tasks]
-                ]
-            )
-            return page.id
+        parent={"database_id": self.database_id},
+        properties={
+            "Name": {"title": [{"text": {"content": meeting_id}}]}
+        },
+        children=[
+            {
+                "object": "block",
+                "type": "heading_2",
+                "heading_2": {
+                    "rich_text": [{"type": "text", "text": {"content": "Summary"}}]
+                }
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [{"type": "text", "text": {"content": summary}}]
+                }
+            },
+            {
+                "object": "block",
+                "type": "heading_2",
+                "heading_2": {
+                    "rich_text": [{"type": "text", "text": {"content": "Tasks"}}]
+                }
+            },
+            *[self._create_task_block(task) for task in tasks]
+        ]
+    )
+            return page["id"]
         except Exception as e:
             raise Exception(f"Failed to create Notion page: {str(e)}")
 
-    def _create_task_block(self, task: Dict) -> Dict:
+    def _create_task_block(self, task) -> Dict:
         """
         Create a task block for Notion
         """
+        # Convert Pydantic model to dict if necessary
+        task_dict = task.dict() if hasattr(task, 'dict') else task
+        
         return {
             "object": "block",
             "type": "to_do",
             "to_do": {
-                "rich_text": [{"type": "text", "text": {"content": f"{task['title']} - Assigned to: {task['assignee']} (Due: {task['due_date']})"}}],
+                "rich_text": [{"type": "text", "text": {"content": f"{task_dict['title']} - Assigned to: {task_dict['assignee']} (Due: {task_dict['due_date']})"}}],
                 "checked": False
             }
         }
