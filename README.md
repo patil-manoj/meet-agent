@@ -1,4 +1,5 @@
-# Hybrid Meeting Agent
+<<<<<<< HEAD
+# Meet Agent
 
 An AI-powered meeting assistant that captures, transcribes, and processes meeting content to generate summaries and actionable tasks.
 
@@ -82,3 +83,6 @@ uvicorn main:app --reload
 ## License
 
 MIT License
+=======
+# meet-agent
+>>>>>>> origin/main
