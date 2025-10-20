@@ -1,0 +1,8 @@
+/* Add your custom styles here */
+.dashboard-card {
+    transition: transform 0.2s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+}
